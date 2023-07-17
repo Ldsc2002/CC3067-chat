@@ -1,8 +1,6 @@
 <h1 align="center">
-Portfolio React UI
+XMPP Chat App
 </h1>
-
-<p align="center">Personal portfolio created using React and Vite. Published to GitHub Pages.</p>
 
 <hr />
 
@@ -14,14 +12,13 @@ Portfolio React UI
 - **CSS** — Styled Components, CSS
 - **PostCSS** — Transforming CSS with JS
 - **Lint** — ESlint
-- **GitHub Pages** — Deployed automatically using GitHub Actions
 
 ## Getting started
 
 1. Clone this repo.
 2. Move to the appropriate directory: `cd portfolio-react-ui`.<br />
 3. Run `npm install` to install dependencies.<br />
-4. Run `npm run dev` to see the example app at `http://localhost:3000/portfolio-react-ui/`.
+4. Run `npm run dev` to see the example app at `http://localhost:3000/`.
 
 ## Available Scripts
 
@@ -30,7 +27,7 @@ In the project directory, you can run:
 ### `npm run dev`
 
 Runs the app in the development mode.<br>
-Open [http://localhost:3000/portfolio-react-ui/](http://localhost:3000/portfolio-react-ui/) to view it in the browser.
+Open [http://localhost:3000/](http://localhost:3000/) to view it in the browser.
 
 The page will reload if you make edits.<br>
 
