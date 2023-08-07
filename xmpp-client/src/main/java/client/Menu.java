@@ -12,8 +12,8 @@ public class Menu {
         boolean auth = false;
     
         while (!auth) {
-            System.out.println("\n1. Login");
-            System.out.println("2. Signup");
+            System.out.println("\n1. Log In");
+            System.out.println("2. Create account");
             System.out.println("3. Exit");
             System.out.println("Enter option: ");
             
@@ -58,6 +58,10 @@ public class Menu {
 
                 case 2:
                     c.addContact();
+                    break;
+
+                case 3:
+                    c.showContactInfo();
                     break;
 
                 case 8:

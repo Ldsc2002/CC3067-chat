@@ -106,7 +106,7 @@ public class Client {
     public void addContact() {
         System.out.println("\nEnter username: ");
         String username = sc.nextLine();
-        
+
         Roster roster = Roster.getInstanceFor(connection);
         BareJid userID;
 
@@ -119,5 +119,26 @@ public class Client {
         }
 
         System.out.println("Contact added successfully");
+    }
+
+    public void showContactInfo() {
+        System.out.println("\nEnter username: ");
+        String username = sc.nextLine();
+
+        Roster roster = Roster.getInstanceFor(connection);
+        BareJid userID;
+
+        try {
+            userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
+            RosterEntry entry = roster.getEntry(userID);
+
+            System.out.println("\n" + "Contact info:");
+            System.out.println(entry);
+            System.out.println(roster.getPresence(userID).getType());
+            System.out.println(roster.getPresence(userID).getStatus());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
     }
 }
