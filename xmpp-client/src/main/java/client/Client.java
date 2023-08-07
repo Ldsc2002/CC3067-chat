@@ -143,18 +143,22 @@ public class Client {
     }
 
     public void sendPrivateMessage() {
+        // TODO
         System.out.println("TODO");
     }
 
     public void sendGroupMessage() {
+        // TODO
         System.out.println("TODO");
     }
 
     public void changeStatus() {
+        // TODO
         System.out.println("TODO");
     }
 
     public void sendFile() {
+        // TODO
         System.out.println("TODO");
     }
 }
