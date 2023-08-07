@@ -4,6 +4,8 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -15,12 +17,11 @@ public class Client {
     private Scanner sc = new Scanner(System.in);
 
     AbstractXMPPConnection connection;
+    XMPPTCPConnectionConfiguration config;
     public String username;
     public String password;
 
     public void connect() {
-        XMPPTCPConnectionConfiguration config;
-
         try {
             config = XMPPTCPConnectionConfiguration.builder()
                 .setXmppDomain("alumchat.xyz")
@@ -100,5 +101,23 @@ public class Client {
         for (RosterEntry entry : entries) {
             System.out.println(entry);
         }
+    }
+
+    public void addContact() {
+        System.out.println("\nEnter username: ");
+        String username = sc.nextLine();
+        
+        Roster roster = Roster.getInstanceFor(connection);
+        BareJid userID;
+
+        try {
+            userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
+            roster.createItemAndRequestSubscription(userID, username, null);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Contact added successfully");
     }
 }

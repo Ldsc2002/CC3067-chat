@@ -56,7 +56,11 @@ public class Menu {
                     c.showContacts();
                     break;
 
-                case 28:
+                case 2:
+                    c.addContact();
+                    break;
+
+                case 8:
                     c.disconnect();
                     System.exit(0);
                     break;
@@ -64,8 +68,7 @@ public class Menu {
                 default:
                     System.out.println("Invalid option");
                     break;
-            }
-            
+            }   
         }
     }
 }
