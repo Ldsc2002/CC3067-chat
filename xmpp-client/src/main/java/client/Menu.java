@@ -43,8 +43,8 @@ public class Menu {
             System.out.println("\n1. Show contacts");
             System.out.println("2. Add contact");
             System.out.println("3. Show contact info");
-            System.out.println("4. Open private chat");
-            System.out.println("5. Open group chat");
+            System.out.println("4. Send private message");
+            System.out.println("5. Send group message");
             System.out.println("6. Change status");
             System.out.println("7. Send file");
             System.out.println("8. Exit");
@@ -62,6 +62,22 @@ public class Menu {
 
                 case 3:
                     c.showContactInfo();
+                    break;
+
+                case 4:
+                    c.sendPrivateMessage();
+                    break;
+
+                case 5:
+                    c.sendGroupMessage();
+                    break;
+
+                case 6:
+                    c.changeStatus();
+                    break;
+
+                case 7:
+                    c.sendFile();
                     break;
 
                 case 8:

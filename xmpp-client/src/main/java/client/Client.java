@@ -141,4 +141,20 @@ public class Client {
             return;
         }
     }
+
+    public void sendPrivateMessage() {
+        System.out.println("TODO");
+    }
+
+    public void sendGroupMessage() {
+        System.out.println("TODO");
+    }
+
+    public void changeStatus() {
+        System.out.println("TODO");
+    }
+
+    public void sendFile() {
+        System.out.println("TODO");
+    }
 }
