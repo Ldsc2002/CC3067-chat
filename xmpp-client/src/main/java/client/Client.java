@@ -5,11 +5,14 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.chat2.Chat;
 
 import java.util.Scanner;
 import java.util.Collection;
@@ -144,8 +147,24 @@ public class Client {
     }
 
     public void sendPrivateMessage() {
-        // TODO
-        System.out.println("TODO");
+        System.out.println("\nEnter username: ");
+        String username = sc.nextLine();
+
+        System.out.println("Enter message: ");
+        String message = sc.nextLine();
+
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+
+        try {
+            EntityBareJid jid = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
+            Chat chat = chatManager.chatWith(jid);
+            chat.send(message);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Message sent successfully");
     }
 
     public void sendGroupMessage() {
