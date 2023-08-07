@@ -2,29 +2,31 @@ package client;
 
 import rocks.xmpp.core.session.XmppClient;
 import rocks.xmpp.core.XmppException;
-import java.util.Scanner;
+import rocks.xmpp.core.net.client.SocketConnectionConfiguration;
 
-public class Client 
-{
-    public void logIn() {
-        XmppClient xmppClient = XmppClient.create("alumchat.xyz");
+public class Client {
+    public XmppClient xmppClient;
+    public String username;
+    public String password;
+
+    public void connect() {
+        SocketConnectionConfiguration tcpConfiguration = SocketConnectionConfiguration.builder()
+            .hostname("alumchat.xyz")
+            .port(5222)
+            .build();
+
+        xmppClient = XmppClient.create("alumchat.xyz", tcpConfiguration);
 
         try {
             xmppClient.connect();
+         } catch (XmppException e) {
+            System.out.println("Error connecting to server: " + e.getMessage());
+         }
+
+         try {
+            xmppClient.close(); 
         } catch (XmppException e) {
-            System.err.println("Error connecting to XMPP server: " + e.getMessage());
-            return;
-        }
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter your username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter your password: ");
-        String password = scanner.nextLine();
-
-        System.out.println(username + " " + password);
-
-        scanner.close();
+            System.out.println("Error closing connection: " + e.getMessage());
+         }
     }
-
 }
