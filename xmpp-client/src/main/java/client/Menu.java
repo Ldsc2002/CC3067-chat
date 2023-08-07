@@ -41,16 +41,22 @@ public class Menu {
 
         while (auth) {
             System.out.println("\n1. Show contacts");
-            System.out.println("2. Exit");
+            System.out.println("2. Add contact");
+            System.out.println("3. Show contact info");
+            System.out.println("4. Open private chat");
+            System.out.println("5. Open group chat");
+            System.out.println("6. Change status");
+            System.out.println("7. Send file");
+            System.out.println("8. Exit");
 
             int option = sc.nextInt();
 
             switch (option) {
                 case 1:
-                    // c.showContacts();
+                    c.showContacts();
                     break;
 
-                case 2:
+                case 28:
                     c.disconnect();
                     System.exit(0);
                     break;

@@ -5,8 +5,11 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jxmpp.jid.parts.Localpart;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
 
 import java.util.Scanner;
+import java.util.Collection;
 
 public class Client {
     private Scanner sc = new Scanner(System.in);
@@ -87,4 +90,15 @@ public class Client {
         System.out.println("Account created successfully");
         return true;
     }   
+
+    public void showContacts() {
+        System.out.println("\nContacts:");
+
+        Roster roster = Roster.getInstanceFor(connection);
+
+        Collection<RosterEntry> entries = roster.getEntries();
+        for (RosterEntry entry : entries) {
+            System.out.println(entry);
+        }
+    }
 }
