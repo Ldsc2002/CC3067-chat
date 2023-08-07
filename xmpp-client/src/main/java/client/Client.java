@@ -9,6 +9,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 
 import java.util.Scanner;
 import java.util.Collection;
@@ -153,8 +154,20 @@ public class Client {
     }
 
     public void changeStatus() {
-        // TODO
-        System.out.println("TODO");
+        System.out.println("\nEnter status: ");
+        String status = sc.nextLine();
+
+        try {
+            PresenceBuilder presenceBuilder = PresenceBuilder.buildPresence()
+                .setStatus(status);
+
+            connection.sendStanza(presenceBuilder.build());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Status changed successfully");
     }
 
     public void sendFile() {
