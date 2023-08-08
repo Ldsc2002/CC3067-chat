@@ -140,9 +140,6 @@ public class Client {
         });
 
         roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
-
-        // TODO Add listener for group messages
-        
     }
 
     public void showContacts() {
