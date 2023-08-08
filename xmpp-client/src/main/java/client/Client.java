@@ -1,6 +1,7 @@
 package client;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -140,6 +141,25 @@ public class Client {
         });
 
         roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
+    }
+
+    public void addGroupListener(String group) {
+        MultiUserChat muc;
+        try {
+            EntityBareJid roomID = JidCreate.entityBareFrom(group + "@conference.alumchat.xyz");
+            muc = MultiUserChatManager.getInstanceFor(connection)
+                .getMultiUserChat(roomID);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        muc.addMessageListener(new MessageListener() {
+            @Override
+            public void processMessage(Message message) {
+                System.out.println("\nReceived group message: " + message.getBody() + " from " + message.getFrom().toString());
+            }
+        }); 
     }
 
     public void showContacts() {
@@ -283,6 +303,8 @@ public class Client {
             System.out.println("Error: " + e.getMessage());
             return;
         }
+
+        addGroupListener(groupName);
 
         System.out.println("Joined group successfully");
     }
