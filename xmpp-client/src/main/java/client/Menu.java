@@ -87,6 +87,8 @@ public class Menu {
                         }
                     }
 
+                    break;
+
                 case 2:
                     while (true) {
                         System.out.println("\n1. Send private message");
@@ -122,6 +124,8 @@ public class Menu {
                         }
                     }
 
+                    break;
+
                 case 3:
                     while (true) {
                         System.out.println("\n1. Create group");
@@ -156,6 +160,8 @@ public class Menu {
                             break;
                         }
                     }
+
+                    break;
 
                 case 4:
                     c.changeStatusMessage();
