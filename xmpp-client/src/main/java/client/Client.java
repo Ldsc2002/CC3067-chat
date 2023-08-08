@@ -120,7 +120,7 @@ public class Client {
         roster.addRosterListener(new RosterListener() {
             @Override
             public void presenceChanged(Presence presence) {
-                System.out.println("\nReceived presence: " + presence.getStatus() + " from " + presence.getFrom().toString());
+                System.out.println("\nReceived presence: " + presence.getMode() + " from " + presence.getFrom().toString());
             }
 
             @Override
@@ -311,11 +311,11 @@ public class Client {
         Presence.Mode[] presenceModes = Presence.Mode.values();
 
         System.out.println("\nSelect presence mode:");
-        for (int i = 0; i < presenceModes.length; i++) {
-            System.out.println(i + ". " + presenceModes[i]);
+        for (int i = 1; i < presenceModes.length + 1; i++) {
+            System.out.println(i + ". " + presenceModes[i - 1]);
         }
 
-        int option = sc.nextInt();
+        int option = sc.nextInt() - 1;
 
         try {
             PresenceBuilder presenceBuilder = PresenceBuilder.buildPresence()
