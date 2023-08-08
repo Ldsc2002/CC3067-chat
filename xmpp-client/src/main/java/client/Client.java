@@ -10,13 +10,18 @@ import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.chat2.Chat;
 
 import java.util.Scanner;
@@ -100,6 +105,45 @@ public class Client {
         System.out.println("Account created successfully");
         return true;
     }   
+
+    public void addMessageListener() {
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+        Roster roster = Roster.getInstanceFor(connection);
+
+        chatManager.addIncomingListener(new IncomingChatMessageListener() {
+            @Override
+            public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
+                System.out.println("\nReceived message: " + message.getBody() + " from " + from.toString());
+            }
+        });
+
+        roster.addRosterListener(new RosterListener() {
+            @Override
+            public void presenceChanged(Presence presence) {
+                System.out.println("\nReceived presence: " + presence.getStatus() + " from " + presence.getFrom().toString());
+            }
+
+            @Override
+            public void entriesAdded(Collection<Jid> addresses) {
+                System.out.println("\nReceived entries added: " + addresses.toString());
+            }
+
+            @Override
+            public void entriesUpdated(Collection<Jid> addresses) {
+                System.out.println("\nReceived entries updated: " + addresses.toString());
+            }
+
+            @Override
+            public void entriesDeleted(Collection<Jid> addresses) {
+                System.out.println("\nReceived entries deleted: " + addresses.toString());
+            }
+        });
+
+        roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
+
+        // TODO Add listener for group messages
+        
+    }
 
     public void showContacts() {
         System.out.println("\nContacts:");
@@ -246,13 +290,36 @@ public class Client {
         System.out.println("Joined group successfully");
     }
 
-    public void changeStatus() {
+    public void changeStatusMessage() {
         System.out.println("\nEnter status: ");
         String status = sc.nextLine();
 
         try {
             PresenceBuilder presenceBuilder = PresenceBuilder.buildPresence()
                 .setStatus(status);
+
+            connection.sendStanza(presenceBuilder.build());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Status changed successfully");
+    }
+
+    public void changeStatus() {
+        Presence.Mode[] presenceModes = Presence.Mode.values();
+
+        System.out.println("\nSelect presence mode:");
+        for (int i = 0; i < presenceModes.length; i++) {
+            System.out.println(i + ". " + presenceModes[i]);
+        }
+
+        int option = sc.nextInt();
+
+        try {
+            PresenceBuilder presenceBuilder = PresenceBuilder.buildPresence()
+                .setMode(presenceModes[option]);
 
             connection.sendStanza(presenceBuilder.build());
         } catch (Exception e) {

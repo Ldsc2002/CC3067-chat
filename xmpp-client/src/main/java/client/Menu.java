@@ -14,7 +14,7 @@ public class Menu {
         while (!auth) {
             System.out.println("\n1. Log In");
             System.out.println("2. Create account");
-            System.out.println("3. Exit");
+            System.out.println("0. Exit");
             System.out.println("Enter option: ");
             
             int option = sc.nextInt();
@@ -28,7 +28,7 @@ public class Menu {
                     auth = c.signup();
                     break;
 
-                case 3:
+                case 0:
                     c.disconnect();
                     System.exit(0);
                     break;
@@ -39,6 +39,8 @@ public class Menu {
             }
         }
 
+        c.addMessageListener();
+
         while (auth) {
             System.out.println("\n1. Show contacts");
             System.out.println("2. Add contact");
@@ -48,8 +50,9 @@ public class Menu {
             System.out.println("6. Create group");
             System.out.println("7. Show groups");
             System.out.println("8. Join group");
-            System.out.println("9. Change status");
-            System.out.println("10. Send file");
+            System.out.println("9. Change status message");
+            System.out.println("10. Change status");
+            System.out.println("11. Send file");
             System.out.println("0. Exit");
 
             int option = sc.nextInt();
@@ -88,10 +91,14 @@ public class Menu {
                     break;
 
                 case 9:
-                    c.changeStatus();
+                    c.changeStatusMessage();
                     break;
 
                 case 10:
+                    c.changeStatus();
+                    break;
+
+                case 11:
                     c.sendFile();
                     break;
 
