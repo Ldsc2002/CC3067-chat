@@ -3,11 +3,16 @@ package client;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.packet.PresenceBuilder;
@@ -156,8 +161,8 @@ public class Client {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
 
         try {
-            EntityBareJid jid = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
-            Chat chat = chatManager.chatWith(jid);
+            EntityBareJid userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
+            Chat chat = chatManager.chatWith(userID);
             chat.send(message);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -170,6 +175,59 @@ public class Client {
     public void sendGroupMessage() {
         // TODO
         System.out.println("TODO");
+    }
+
+    public void createGroup() {
+        System.out.println("\nEnter group name: ");
+        String groupName = sc.nextLine();
+
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
+        try {
+            EntityBareJid groupJid = JidCreate.entityBareFrom(groupName + "@conference.alumchat.xyz");
+            MultiUserChat muc = manager.getMultiUserChat(groupJid);
+            muc.create(Resourcepart.from(username));
+            muc.sendConfigurationForm(muc.getConfigurationForm().getFillableForm());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Group created successfully");
+    }
+
+    public void showGroups() {
+        ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
+
+        try {
+            DiscoverItems discoItems = discoManager.discoverItems(JidCreate.domainBareFrom("conference.alumchat.xyz"));
+
+            System.out.println("\nGroups:");
+            for (DiscoverItems.Item item : discoItems.getItems()) {
+                System.out.println(item.getEntityID());
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+    }
+
+    public void joinGroup() {
+        System.out.println("\nEnter group name: ");
+        String groupName = sc.nextLine();
+
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
+        try {
+            EntityBareJid groupJid = JidCreate.entityBareFrom(groupName + "@conference.alumchat.xyz");
+            MultiUserChat muc = manager.getMultiUserChat(groupJid);
+            muc.join(Resourcepart.from(username));
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Joined group successfully");
     }
 
     public void changeStatus() {

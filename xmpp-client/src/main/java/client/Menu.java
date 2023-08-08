@@ -45,9 +45,12 @@ public class Menu {
             System.out.println("3. Show contact info");
             System.out.println("4. Send private message");
             System.out.println("5. Send group message");
-            System.out.println("6. Change status");
-            System.out.println("7. Send file");
-            System.out.println("8. Exit");
+            System.out.println("6. Create group");
+            System.out.println("7. Show groups");
+            System.out.println("8. Join group");
+            System.out.println("9. Change status");
+            System.out.println("10. Send file");
+            System.out.println("0. Exit");
 
             int option = sc.nextInt();
 
@@ -73,14 +76,26 @@ public class Menu {
                     break;
 
                 case 6:
-                    c.changeStatus();
+                    c.createGroup();
                     break;
 
                 case 7:
-                    c.sendFile();
+                    c.showGroups();
                     break;
 
                 case 8:
+                    c.joinGroup();
+                    break;
+
+                case 9:
+                    c.changeStatus();
+                    break;
+
+                case 10:
+                    c.sendFile();
+                    break;
+
+                case 0:
                     c.disconnect();
                     System.exit(0);
                     break;
