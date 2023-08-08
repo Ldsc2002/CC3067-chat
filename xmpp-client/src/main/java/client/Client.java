@@ -173,8 +173,24 @@ public class Client {
     }
 
     public void sendGroupMessage() {
-        // TODO
-        System.out.println("TODO");
+        System.out.println("\nEnter group name: ");
+        String groupName = sc.nextLine();
+
+        System.out.println("Enter message: ");
+        String message = sc.nextLine();
+
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
+        try {
+            EntityBareJid groupJid = JidCreate.entityBareFrom(groupName + "@conference.alumchat.xyz");
+            MultiUserChat muc = manager.getMultiUserChat(groupJid);
+            muc.sendMessage(message);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Message sent successfully");
     }
 
     public void createGroup() {
