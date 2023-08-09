@@ -3,14 +3,18 @@ package client;
 import java.util.Scanner;
 
 public class Menu {
+    // Private scanner to read user input
     private Scanner sc = new Scanner(System.in);
 
     public void mainMenu() {
+        // Create client object and connect to server
         Client c = new Client();
         c.connect();
 
+        // Is user authenticated?
         boolean auth = false;
     
+        // While not authenticated, show login menu
         while (!auth) {
             System.out.println("\n1. Log In");
             System.out.println("2. Create account");
@@ -21,11 +25,12 @@ public class Menu {
 
             switch (option) {
                 case 1:
+                    // If user logs in successfully, auth = true
                     auth = c.login();
                     break;
 
                 case 2:
-                    auth = c.signup();
+                    c.signup();
                     break;
 
                 case 0:
@@ -39,8 +44,10 @@ public class Menu {
             }
         }
 
+        // Add message listener to receive messages and notifications after authentication
         c.addMessageListener();
 
+        // Show main menu
         while (auth) {
             System.out.println("\n1. Contacts");
             System.out.println("2. Send message");
@@ -53,6 +60,7 @@ public class Menu {
 
             switch (option) {
                 case 1:
+                    // Show contacts menu
                     while (true) {
                         System.out.println("\n1. Show contacts");
                         System.out.println("2. Add contact");
@@ -90,6 +98,7 @@ public class Menu {
                     break;
 
                 case 2:
+                    // Show send message menu
                     while (true) {
                         System.out.println("\n1. Send private message");
                         System.out.println("2. Send group message");
@@ -127,6 +136,7 @@ public class Menu {
                     break;
 
                 case 3:
+                    // Show group management menu
                     while (true) {
                         System.out.println("\n1. Create group");
                         System.out.println("2. Show groups");
@@ -172,6 +182,7 @@ public class Menu {
                     break;
 
                 case 0:
+                    // Disconnect and exit
                     c.disconnect();
                     System.exit(0);
                     break;

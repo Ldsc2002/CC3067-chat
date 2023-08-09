@@ -1,5 +1,6 @@
 package client;
 
+// Smack imports
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
@@ -27,17 +28,19 @@ import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.chat2.Chat;
 
+// Java imports
 import java.util.Scanner;
 import java.io.File;
 import java.util.Collection;
 
 public class Client {
+    // Scanner object to read user input
     private Scanner sc = new Scanner(System.in);
 
-    AbstractXMPPConnection connection;
-    XMPPTCPConnectionConfiguration config;
-    public String username;
-    public String password;
+    // Private connection and configuration objects
+    private AbstractXMPPConnection connection;
+    private XMPPTCPConnectionConfiguration config;
+    private String username;
 
     public void connect() {
         try {
@@ -70,7 +73,7 @@ public class Client {
         username = sc.nextLine();
 
         System.out.println("Enter password: ");
-        password = sc.nextLine();
+        String password = sc.nextLine();
 
         try {
             connection.login(username, password);
@@ -88,7 +91,7 @@ public class Client {
         username = sc.nextLine();
 
         System.out.println("Enter password: ");
-        password = sc.nextLine();
+        String password = sc.nextLine();
 
         Localpart usernameLocalpart;
         try {
