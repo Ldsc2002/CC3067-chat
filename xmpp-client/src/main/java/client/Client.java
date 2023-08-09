@@ -7,8 +7,6 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
-import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -120,7 +118,31 @@ public class Client {
         chatManager.addIncomingListener(new IncomingChatMessageListener() {
             @Override
             public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
-                System.out.println("\nReceived message: " + message.getBody() + " from " + from.toString());
+                // Check if message start with "file://"
+                if (message.getBody().startsWith("file://")) {
+                    String base64File = message.getBody().substring(7);
+                    String fileType = message.getBody().substring(7, 7 + base64File.indexOf("://"));
+                    base64File = base64File.substring(base64File.indexOf("://") + 3);
+
+                    System.out.println(base64File);
+                    System.out.println(fileType);
+
+                    byte[] file = java.util.Base64.getDecoder().decode(base64File);
+
+                    System.out.println("\nReceived file from " + from.toString());
+
+                    File fileToSave = new File("received_file." + fileType);
+                    try {
+                        java.io.FileWriter fileWriter = new java.io.FileWriter(fileToSave);
+                        fileWriter.write(new String(file));
+                        fileWriter.close();
+                    } catch (Exception e) {
+                        System.out.println("Error: " + e.getMessage());
+                        return;
+                    }
+                } else {
+                    System.out.println("\nReceived message: " + message.getBody() + " from " + from.toString());
+                }
             }
         });
 
@@ -356,35 +378,37 @@ public class Client {
     }
 
     public void sendFile() {
-        // TODO validate
         System.out.println("\nEnter username: ");
         String username = sc.nextLine();
 
         System.out.println("Enter file path: ");
         String filePath = sc.nextLine();
 
-        System.out.println("Enter description: ");
-        String description = sc.nextLine();
+        File file = new File(filePath);
+
+        byte[] fileBytes = new byte[(int) file.length()];
+        
+        try {
+            java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);
+            fileInputStream.read(fileBytes);
+            fileInputStream.close();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        String base64File = java.util.Base64.getEncoder().encodeToString(fileBytes);
+
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+
+        String fileType = filePath.substring(filePath.lastIndexOf(".") + 1);
+
+        String message = "file://" + fileType + "://" +  base64File;
 
         try {
-            File file = new File(filePath);
-
-            // Use http file upload
-            HttpFileUploadManager manager = HttpFileUploadManager.getInstanceFor(connection);
-            UploadProgressListener listener = new UploadProgressListener() {
-                @Override
-                public void onUploadProgress(long uploadedBytes, long totalBytes) {
-                    System.out.println("Uploaded " + uploadedBytes + " of " + totalBytes + " bytes");
-                }
-            };
-
-            manager.uploadFile(file, listener);
-
-            ChatManager chatManager = ChatManager.getInstanceFor(connection);
             EntityBareJid userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
             Chat chat = chatManager.chatWith(userID);
-            chat.send("http://alumchat.xyz/uploads/" + file.getName() + " " + description);
-            
+            chat.send(message);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return;
