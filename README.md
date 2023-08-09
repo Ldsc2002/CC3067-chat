@@ -1,4 +1,4 @@
-### Install dependencie
+### Install dependencies
 mvn clean package
 
 ### Compile project

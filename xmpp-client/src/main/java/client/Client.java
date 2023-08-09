@@ -42,6 +42,7 @@ public class Client {
 
     public void connect() {
         try {
+            // Create configuration object
             config = XMPPTCPConnectionConfiguration.builder()
                 .setXmppDomain("alumchat.xyz")
                 .setHost("alumchat.xyz")
@@ -52,9 +53,11 @@ public class Client {
             return;
         }
 
+        // Create connection object
         connection = new XMPPTCPConnection(config);
 
         try {
+            // Attempt to connect
             connection.connect(); 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -63,10 +66,16 @@ public class Client {
     }
 
     public void disconnect() {
+        // Disconnect user from server
         connection.disconnect();
     }
 
     public boolean login() {
+        /* 
+         * Returns true if login was successful
+         * Returns false if login was unsuccessful
+         */
+
         System.out.println("\nEnter username: ");
         username = sc.nextLine();
 
@@ -74,6 +83,7 @@ public class Client {
         String password = sc.nextLine();
 
         try {
+            // Attempt to login
             connection.login(username, password);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -85,6 +95,11 @@ public class Client {
     }
 
     public boolean signup() {
+        /* 
+         * Returns true if signup was successful
+         * Returns false if signup was unsuccessful
+         */
+
         System.out.println("\nEnter username: ");
         username = sc.nextLine();
 
@@ -93,6 +108,7 @@ public class Client {
 
         Localpart usernameLocalpart;
         try {
+            // Create username localpart
             usernameLocalpart = Localpart.from(username);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -100,6 +116,7 @@ public class Client {
         }
 
         try {
+            // Attempt to create account over insecure connection
             AccountManager.sensitiveOperationOverInsecureConnectionDefault(true);
             AccountManager.getInstance(connection).createAccount(usernameLocalpart, password);
         } catch (Exception e) {
@@ -115,24 +132,25 @@ public class Client {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         Roster roster = Roster.getInstanceFor(connection);
 
+        // Add incoming message listener
         chatManager.addIncomingListener(new IncomingChatMessageListener() {
             @Override
             public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
                 // Check if message start with "file://"
                 if (message.getBody().startsWith("file://")) {
+                    // Get file type and base64 file
                     String base64File = message.getBody().substring(7);
                     String fileType = message.getBody().substring(7, 7 + base64File.indexOf("://"));
                     base64File = base64File.substring(base64File.indexOf("://") + 3);
-
-                    System.out.println(base64File);
-                    System.out.println(fileType);
 
                     byte[] file = java.util.Base64.getDecoder().decode(base64File);
 
                     System.out.println("\nReceived file from " + from.toString());
 
+                    // Save file
                     File fileToSave = new File("received_file." + fileType);
                     try {
+                        // Write file
                         java.io.FileWriter fileWriter = new java.io.FileWriter(fileToSave);
                         fileWriter.write(new String(file));
                         fileWriter.close();
@@ -146,34 +164,41 @@ public class Client {
             }
         });
 
+        // Add roster listener
         roster.addRosterListener(new RosterListener() {
             @Override
+            // Called when a contact changes presence
             public void presenceChanged(Presence presence) {
                 System.out.println("\nReceived presence: " + presence.getMode() + " from " + presence.getFrom().toString());
             }
 
             @Override
+            // Called when a contact is added
             public void entriesAdded(Collection<Jid> addresses) {
                 System.out.println("\nReceived entries added: " + addresses.toString());
             }
 
             @Override
+            // Called when a contact is updated
             public void entriesUpdated(Collection<Jid> addresses) {
                 System.out.println("\nReceived entries updated: " + addresses.toString());
             }
 
             @Override
+            // Called when a contact is deleted
             public void entriesDeleted(Collection<Jid> addresses) {
                 System.out.println("\nReceived entries deleted: " + addresses.toString());
             }
         });
 
+        // Set subscription mode to accept all
         roster.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
     }
 
     public void addGroupListener(String group) {
         MultiUserChat muc;
         try {
+            // Get group
             EntityBareJid roomID = JidCreate.entityBareFrom(group + "@conference.alumchat.xyz");
             muc = MultiUserChatManager.getInstanceFor(connection)
                 .getMultiUserChat(roomID);
@@ -182,9 +207,11 @@ public class Client {
             return;
         }
 
+        // Add listener to group chat
         muc.addMessageListener(new MessageListener() {
             @Override
             public void processMessage(Message message) {
+                // Output message
                 System.out.println("\nReceived group message: " + message.getBody() + " from " + message.getFrom().toString());
             }
         }); 
@@ -193,8 +220,10 @@ public class Client {
     public void showContacts() {
         System.out.println("\nContacts:");
 
+        // Get roster instance
         Roster roster = Roster.getInstanceFor(connection);
 
+        // Get roster entries
         Collection<RosterEntry> entries = roster.getEntries();
         for (RosterEntry entry : entries) {
             System.out.println(entry);
@@ -205,10 +234,12 @@ public class Client {
         System.out.println("\nEnter username: ");
         String username = sc.nextLine();
 
+        // Get roster instance
         Roster roster = Roster.getInstanceFor(connection);
         BareJid userID;
 
         try {
+            // Add contact and request subscription
             userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
             roster.createItemAndRequestSubscription(userID, username, null);
         } catch (Exception e) {
@@ -223,10 +254,12 @@ public class Client {
         System.out.println("\nEnter username: ");
         String username = sc.nextLine();
 
+        // Get roster instance
         Roster roster = Roster.getInstanceFor(connection);
         BareJid userID;
 
         try {
+            // Get contact info
             userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
             RosterEntry entry = roster.getEntry(userID);
 
@@ -251,6 +284,8 @@ public class Client {
 
         try {
             EntityBareJid userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
+            
+            // Open chat with user and send message
             Chat chat = chatManager.chatWith(userID);
             chat.send(message);
         } catch (Exception e) {
@@ -268,9 +303,11 @@ public class Client {
         System.out.println("Enter message: ");
         String message = sc.nextLine();
 
+        // Get group manager
         MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
         try {
+            // Get group and send message
             EntityBareJid groupJid = JidCreate.entityBareFrom(groupName + "@conference.alumchat.xyz");
             MultiUserChat muc = manager.getMultiUserChat(groupJid);
             muc.sendMessage(message);
@@ -286,12 +323,16 @@ public class Client {
         System.out.println("\nEnter group name: ");
         String groupName = sc.nextLine();
 
+        // Get group manager
         MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
         try {
+            // Create group
             EntityBareJid groupJid = JidCreate.entityBareFrom(groupName + "@conference.alumchat.xyz");
             MultiUserChat muc = manager.getMultiUserChat(groupJid);
             muc.create(Resourcepart.from(username));
+
+            // Set group configuration
             muc.sendConfigurationForm(muc.getConfigurationForm().getFillableForm());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -302,12 +343,16 @@ public class Client {
     }
 
     public void showGroups() {
+        // Get service discovery manager
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
         try {
+            // Get groups using service discovery
             DiscoverItems discoItems = discoManager.discoverItems(JidCreate.domainBareFrom("conference.alumchat.xyz"));
 
             System.out.println("\nGroups:");
+            
+            // List groups
             for (DiscoverItems.Item item : discoItems.getItems()) {
                 System.out.println(item.getEntityID());
             }
@@ -321,9 +366,11 @@ public class Client {
         System.out.println("\nEnter group name: ");
         String groupName = sc.nextLine();
 
+        // Get group manager
         MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
         try {
+            // Get group and join
             EntityBareJid groupJid = JidCreate.entityBareFrom(groupName + "@conference.alumchat.xyz");
             MultiUserChat muc = manager.getMultiUserChat(groupJid);
             muc.join(Resourcepart.from(username));
@@ -332,6 +379,7 @@ public class Client {
             return;
         }
 
+        // Add group listener when user joins
         addGroupListener(groupName);
 
         System.out.println("Joined group successfully");
@@ -342,9 +390,11 @@ public class Client {
         String status = sc.nextLine();
 
         try {
+            // Change status
             PresenceBuilder presenceBuilder = PresenceBuilder.buildPresence()
                 .setStatus(status);
 
+            // Send new presence
             connection.sendStanza(presenceBuilder.build());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -355,6 +405,7 @@ public class Client {
     }
 
     public void changeStatus() {
+        // Get presence modes from enum
         Presence.Mode[] presenceModes = Presence.Mode.values();
 
         System.out.println("\nSelect presence mode:");
@@ -365,9 +416,11 @@ public class Client {
         int option = sc.nextInt() - 1;
 
         try {
+            // Change status
             PresenceBuilder presenceBuilder = PresenceBuilder.buildPresence()
                 .setMode(presenceModes[option]);
 
+            // Send new presence
             connection.sendStanza(presenceBuilder.build());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -384,11 +437,14 @@ public class Client {
         System.out.println("Enter file path: ");
         String filePath = sc.nextLine();
 
+        // Open file
         File file = new File(filePath);
 
+        // Create byte array to store file
         byte[] fileBytes = new byte[(int) file.length()];
         
         try {
+            //Read file to byte array 
             java.io.FileInputStream fileInputStream = new java.io.FileInputStream(file);
             fileInputStream.read(fileBytes);
             fileInputStream.close();
@@ -397,15 +453,19 @@ public class Client {
             return;
         }
 
+        // Encode file to base64
         String base64File = java.util.Base64.getEncoder().encodeToString(fileBytes);
-
-        ChatManager chatManager = ChatManager.getInstanceFor(connection);
-
+        // Get file type from file path
         String fileType = filePath.substring(filePath.lastIndexOf(".") + 1);
 
+        // Create message with format "file://fileType://base64File"
         String message = "file://" + fileType + "://" +  base64File;
 
+        // Get chat manager
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+
         try {
+            // Open chat with user and send message
             EntityBareJid userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
             Chat chat = chatManager.chatWith(userID);
             chat.send(message);
