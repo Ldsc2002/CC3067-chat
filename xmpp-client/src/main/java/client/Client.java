@@ -6,6 +6,8 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -26,6 +28,7 @@ import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.chat2.Chat;
 
 import java.util.Scanner;
+import java.io.File;
 import java.util.Collection;
 
 public class Client {
@@ -350,7 +353,40 @@ public class Client {
     }
 
     public void sendFile() {
-        // TODO
-        System.out.println("TODO");
+        // TODO validate
+        System.out.println("\nEnter username: ");
+        String username = sc.nextLine();
+
+        System.out.println("Enter file path: ");
+        String filePath = sc.nextLine();
+
+        System.out.println("Enter description: ");
+        String description = sc.nextLine();
+
+        try {
+            File file = new File(filePath);
+
+            // Use http file upload
+            HttpFileUploadManager manager = HttpFileUploadManager.getInstanceFor(connection);
+            UploadProgressListener listener = new UploadProgressListener() {
+                @Override
+                public void onUploadProgress(long uploadedBytes, long totalBytes) {
+                    System.out.println("Uploaded " + uploadedBytes + " of " + totalBytes + " bytes");
+                }
+            };
+
+            manager.uploadFile(file, listener);
+
+            ChatManager chatManager = ChatManager.getInstanceFor(connection);
+            EntityBareJid userID = JidCreate.entityBareFrom(username + "@" + config.getXMPPServiceDomain());
+            Chat chat = chatManager.chatWith(userID);
+            chat.send("http://alumchat.xyz/uploads/" + file.getName() + " " + description);
+            
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("File sent successfully");
     }
 }
