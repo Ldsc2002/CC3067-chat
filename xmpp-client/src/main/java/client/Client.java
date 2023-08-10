@@ -138,24 +138,36 @@ public class Client {
             public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
                 // Check if message start with "file://"
                 if (message.getBody().startsWith("file://")) {
-                    // Get file type and base64 file
-                    String base64File = message.getBody().substring(7);
-                    String fileType = message.getBody().substring(7, 7 + base64File.indexOf("://"));
-                    base64File = base64File.substring(base64File.indexOf("://") + 3);
+                    String base64File, fileType;
+                    byte[] file;
 
-                    byte[] file = java.util.Base64.getDecoder().decode(base64File);
+                    // In case decoding fails
+                    try {
+                        // Get file type and base64 file
+                        base64File = message.getBody().substring(7);
+                        fileType = message.getBody().substring(7, 7 + base64File.indexOf("://"));
+                        base64File = base64File.substring(base64File.indexOf("://") + 3);
+
+                        // Decode file
+                        file = java.util.Base64.getDecoder().decode(base64File);
+                    } catch (Exception e) {
+                        System.out.println("Error decoding file from " + from.toString());
+                        return;
+                    }
 
                     System.out.println("\nReceived file from " + from.toString());
 
-                    // Save file
-                    File fileToSave = new File("received_file." + fileType);
+                    // Create new file
+                    File fileToSave = new File("fileFrom" + from.toString() + "." + fileType);
+                    
+                    // In case writing fails
                     try {
                         // Write file
                         java.io.FileWriter fileWriter = new java.io.FileWriter(fileToSave);
                         fileWriter.write(new String(file));
                         fileWriter.close();
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        System.out.println("Error writing file from " + from.toString());
                         return;
                     }
                 } else {
