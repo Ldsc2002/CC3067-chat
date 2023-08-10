@@ -21,9 +21,19 @@ public class Menu {
             System.out.println("0. Exit");
             System.out.println("Enter option: ");
             
-            int option = sc.nextInt();
+            int option = -1;
+            try {
+                String input = sc.nextLine();
+                option = Integer.parseInt(input);
+            } catch (Exception e) {
+                System.out.println("Invalid option");
+            }
 
             switch (option) {
+                case -1:
+                    // -1 Input error
+                    break;
+
                 case 1:
                     // If user logs in successfully, auth = true
                     auth = c.login();
@@ -56,9 +66,19 @@ public class Menu {
             System.out.println("5. Change status");
             System.out.println("0. Exit");
 
-            int option = sc.nextInt();
+            int option = -1;
+            try {
+                String input = sc.nextLine();
+                option = Integer.parseInt(input);
+            } catch (Exception e) {
+                System.out.println("Invalid option");
+            }
 
             switch (option) {
+                case -1:
+                    // -1 Input error
+                    break;
+
                 case 1:
                     // Show contacts menu
                     while (true) {
@@ -67,9 +87,19 @@ public class Menu {
                         System.out.println("3. Show contact info");
                         System.out.println("0. Back");
 
-                        int option2 = sc.nextInt();
+                        int option2 = -1;
+                        try {
+                            String input = sc.nextLine();
+                            option2 = Integer.parseInt(input);
+                        } catch (Exception e) {
+                            System.out.println("Invalid option");
+                        }
 
                         switch (option2) {
+                            case -1:
+                                // -1 Input error
+                                break;
+
                             case 1:
                                 c.showContacts();
                                 break;
@@ -105,9 +135,19 @@ public class Menu {
                         System.out.println("3. Send file");
                         System.out.println("0. Back");
 
-                        int option2 = sc.nextInt();
+                        int option2 = -1;
+                        try {
+                            String input = sc.nextLine();
+                            option2 = Integer.parseInt(input);
+                        } catch (Exception e) {
+                            System.out.println("Invalid option");
+                        }
 
                         switch (option2) {
+                            case -1:
+                                // -1 Input error
+                                break;
+
                             case 1:
                                 c.sendPrivateMessage();
                                 break;
@@ -143,9 +183,19 @@ public class Menu {
                         System.out.println("3. Join group");
                         System.out.println("0. Back");
 
-                        int option2 = sc.nextInt();
+                        int option2 = -1;
+                        try {
+                            String input = sc.nextLine();
+                            option2 = Integer.parseInt(input);
+                        } catch (Exception e) {
+                            System.out.println("Invalid option");
+                        }
 
                         switch (option2) {
+                            case -1:
+                                // -1 Input error
+                                break;
+
                             case 1:
                                 c.createGroup();
                                 break;
