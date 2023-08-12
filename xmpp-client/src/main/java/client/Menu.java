@@ -64,6 +64,7 @@ public class Menu {
             System.out.println("3. Group management");
             System.out.println("4. Change status message");
             System.out.println("5. Change status");
+            System.out.println("6. Delete account");
             System.out.println("0. Exit");
 
             int option = -1;
@@ -229,6 +230,12 @@ public class Menu {
 
                 case 5:
                     c.changeStatus();
+                    break;
+
+                case 6:
+                    // Delete account and exit
+                    c.deleteAccount();
+                    System.exit(0);
                     break;
 
                 case 0:

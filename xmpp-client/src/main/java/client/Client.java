@@ -126,7 +126,28 @@ public class Client {
 
         System.out.println("Account created successfully");
         return true;
-    }   
+    }  
+    
+    public void deleteAccount() {
+        System.out.println("\nAre you sure you want to delete your account? (y/n)");
+
+        String answer = sc.nextLine();
+
+        if (!answer.equals("y")) {
+            return;
+        }
+
+        try {
+            // Attempt to delete account over insecure connection
+            AccountManager.sensitiveOperationOverInsecureConnectionDefault(true);
+            AccountManager.getInstance(connection).deleteAccount();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Account deleted successfully");
+    }
 
     public void addMessageListener() {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
