@@ -1,6 +1,7 @@
 <!-- Write a readme for this project -->
 
 # XMPP Client
+By Luis Santos
 
 ## Description
 This is a simple XMPP client that can be used to send and receive messages from an XMPP server.
@@ -10,6 +11,21 @@ This is a simple XMPP client that can be used to send and receive messages from 
 * Maven
 * Smack API
 * Openfire XMPP server
+
+## Features
+* Register new user
+* Login
+* Close connection
+* Delete user
+* Show all users and their status
+* Add user to roster
+* Show contact details
+* Send message to user
+* Send message to group
+* Change status
+* Change presence
+* File transfer
+* Notifications
 
 ## Installation
 
@@ -42,18 +58,3 @@ mvn package
 ```bash
 java -cp target/xmpp-client-1.0.jar client.App
 ```
-
-## Features
-* Register new user
-* Login
-* Close connection
-* Delete user
-* Show all users and their status
-* Add user to roster
-* Show contact details
-* Send message to user
-* Send message to group
-* Change status
-* Change presence
-* File transfer
-* Notifications
